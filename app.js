@@ -63,6 +63,7 @@ app.post('/', function (req, res) {
             res.send(generateResponse(meals));
         })
         .catch(function (err) {
+            console.error(err);
             res.status(500).send(err)
         });
 });
