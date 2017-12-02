@@ -48,7 +48,7 @@ function generateResponse(meals) {
             "outputSpeech": {
                 "type": "PlainText",
                 "text": "Plain text string to speak",
-                "ssml": "<speak>" + meals.join(', ') + "</speak>"
+                "ssml": "<speak>" + Object.keys(meals).join(', ') + "</speak>"
             }
         }
     }
