@@ -41,12 +41,26 @@ function getMeals(planHtml) {
     return meals;
 }
 
+function generateResponse(meals) {
+    return {
+        "version": "1.0",
+        "response": {
+            "outputSpeech": {
+                "type": "PlainText",
+                "text": "Plain text string to speak",
+                "ssml": "<speak>" + meals.join(', ') + "</speak>"
+            }
+        }
+    }
+
+}
+
 app.post('/', function (req, res) {
-    let date = req.body.date;
+    let date = req.body.request.intent.slots['Day'].value;
     return getPlan(date)
         .then(getMeals)
         .then(meals => {
-            res.send(meals);
+            res.send(generateResponse(meals));
         })
         .catch(function (err) {
             res.status(500).send(err)
