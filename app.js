@@ -41,26 +41,52 @@ function getMeals(planHtml) {
     return meals;
 }
 
-function generateResponse(meals) {
+function generateOutputText(meals) {
+    let outputText = ''
+
+    for (var key in meals) {
+        let mealGroup = key;
+        outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
+        mealsArray = meals[key];
+
+        mealsArray.forEach((meal, index) => {
+            if (mealsArray.length === 1) {
+                outputText += meal + '. '
+            } else if (index == mealsArray.length - 1) {
+                outputText += ' und ' + meal + '. '
+            } else if (index > 0) {
+                outputText += ', ' + meal
+            } else {
+                outputText += meal;
+            }
+        })
+    }
+
+    outputText = outputText.replace(new RegExp(' , ', 'g'), ', ');
+    outputText = outputText.replace(new RegExp(' . ', 'g'), '. ');
+    return outputText;
+}
+
+function generateResponse(outputText) {
     return {
         "version": "1.0",
         "response": {
             "outputSpeech": {
                 "type": "PlainText",
-                "text": Object.keys(meals).join(', '),
-                "ssml": "<speak>" + Object.keys(meals).join(', ') + "</speak>"
+                "text": outputText,
+                "ssml": "<speak>" + outputText + "</speak>"
             }
         }
     }
-
 }
 
 app.post('/', function (req, res) {
     let date = req.body.request.intent.slots['Day'].value;
     return getPlan(date)
         .then(getMeals)
-        .then(meals => {
-            res.send(generateResponse(meals));
+        .then(generateOutputText)
+        .then(outputText => {
+            res.send(generateResponse(outputText));
         })
         .catch(function (err) {
             console.error(err);
