@@ -52,7 +52,7 @@ function formatDate(date) {
     if (month < 10) month = '0' + month;
     let year = date.getFullYear().toString().substr(-2);
 
-    return `${dayName}, den <say-as interpret-as="date">${day}.${month}.${year}</say-as>`;
+    return `${dayName}, den <say-as interpret-as="date" format="dmy">${day}.${month}.${year}</say-as>`;
 }
 
 function generateOutputText(meals, date) {
