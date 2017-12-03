@@ -56,30 +56,35 @@ function formatDate(date) {
 }
 
 function generateOutputText(meals, date) {
-    console.log(date);
     let dateString = formatDate(date);
-    let outputText = 'Hier ist der Essensplan für ' + dateString + '. '
+    let outputText = '';
 
-    for (var key in meals) {
-        let mealGroup = key;
-        outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
-        mealsArray = meals[key];
+    if (Object.keys(meals).length === 1 && Object.keys(meals)[0] === '') {
+        outputText = dateString + ' gibt es leider kein Speisenangebot.';
+    } else {
+        outputText = 'Hier ist der Essensplan für ' + dateString + '. '
 
-        mealsArray.forEach((meal, index) => {
-            if (mealsArray.length === 1) {
-                outputText += meal + '. '
-            } else if (index == mealsArray.length - 1) {
-                outputText += ' und ' + meal + '. '
-            } else if (index > 0) {
-                outputText += ', ' + meal
-            } else {
-                outputText += meal;
-            }
-        })
+        for (var key in meals) {
+            let mealGroup = key;
+            outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
+            mealsArray = meals[key];
+
+            mealsArray.forEach((meal, index) => {
+                if (mealsArray.length === 1) {
+                    outputText += meal + '. '
+                } else if (index == mealsArray.length - 1) {
+                    outputText += ' und ' + meal + '. '
+                } else if (index > 0) {
+                    outputText += ', ' + meal
+                } else {
+                    outputText += meal;
+                }
+            })
+        }
+
+        outputText = outputText.replace(new RegExp(' , ', 'g'), ', ');
+        outputText = outputText.replace(new RegExp(' . ', 'g'), '. ');
     }
-
-    outputText = outputText.replace(new RegExp(' , ', 'g'), ', ');
-    outputText = outputText.replace(new RegExp(' . ', 'g'), '. ');
     return outputText;
 }
 
