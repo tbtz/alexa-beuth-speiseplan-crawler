@@ -41,36 +41,42 @@ function getMeals(planHtml) {
     return meals;
 }
 
-function generateOutputText(meals) {
-    let outputText = ''
+function formatDate(date) {
+    date = new Date(date);
+    let dayNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    let dayName = dayNames[date.getDay()];
 
-    let keys = Object.keys(meals);
-    keys.forEach((key, index) => {
+    let day = date.getDate();
+    if (day < 10) day = '0' + day;
+    let month = date.getMonth() + 1;
+    if (month < 10) month = '0' + month;
+    let year = date.getFullYear().toString().substr(-2);
+
+    return `${dayName}, den <say-as interpret-as="date">${day}.${month}.${year}</say-as>`;
+}
+
+function generateOutputText(meals, date) {
+    console.log(date);
+    let dateString = formatDate(date);
+    let outputText = 'Hier ist der Essensplan für ' + dateString + '. '
+
+    for (var key in meals) {
         let mealGroup = key;
+        outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
+        mealsArray = meals[key];
 
-        if (keys.length === 1) {
-            outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
-        } else if (index == keys.length - 1) {
-            outputText += 'und in der Kategorie ' + mealGroup + ' gibt es: ';
-        } else if (index > 0) {
-            outputText += ', in der Kategorie ' + mealGroup + ' gibt es: ';
-        } else {
-            outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
-        }
-
-        let mealsArray = meals[key];
         mealsArray.forEach((meal, index) => {
             if (mealsArray.length === 1) {
-                outputText += meal + ''
+                outputText += meal + '. '
             } else if (index == mealsArray.length - 1) {
-                outputText += ' und ' + meal + ''
+                outputText += ' und ' + meal + '. '
             } else if (index > 0) {
                 outputText += ', ' + meal
             } else {
                 outputText += meal;
             }
         })
-    })
+    }
 
     outputText = outputText.replace(new RegExp(' , ', 'g'), ', ');
     outputText = outputText.replace(new RegExp(' . ', 'g'), '. ');
@@ -94,12 +100,13 @@ app.post('/', function (req, res) {
     let date = req.body.request.intent.slots['Day'].value;
     return getPlan(date)
         .then(getMeals)
-        .then(generateOutputText)
+        .then(meals => {
+            return generateOutputText(meals, date)
+        })
         .then(outputText => {
             res.send(generateResponse(outputText));
         })
         .catch(function (err) {
-            console.error(err);
             res.status(500).send(err)
         });
 });
