@@ -44,23 +44,33 @@ function getMeals(planHtml) {
 function generateOutputText(meals) {
     let outputText = ''
 
-    for (var key in meals) {
+    let keys = Object.keys(meals);
+    keys.forEach((key, index) => {
         let mealGroup = key;
-        outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
-        mealsArray = meals[key];
 
+        if (keys.length === 1) {
+            outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
+        } else if (index == keys.length - 1) {
+            outputText += 'und in der Kategorie ' + mealGroup + ' gibt es: ';
+        } else if (index > 0) {
+            outputText += ', in der Kategorie ' + mealGroup + ' gibt es: ';
+        } else {
+            outputText += 'In der Kategorie ' + mealGroup + ' gibt es: ';
+        }
+
+        let mealsArray = meals[key];
         mealsArray.forEach((meal, index) => {
             if (mealsArray.length === 1) {
-                outputText += meal + '. '
+                outputText += meal + ''
             } else if (index == mealsArray.length - 1) {
-                outputText += ' und ' + meal + '. '
+                outputText += ' und ' + meal + ''
             } else if (index > 0) {
                 outputText += ', ' + meal
             } else {
                 outputText += meal;
             }
         })
-    }
+    })
 
     outputText = outputText.replace(new RegExp(' , ', 'g'), ', ');
     outputText = outputText.replace(new RegExp(' . ', 'g'), '. ');
