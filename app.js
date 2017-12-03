@@ -72,7 +72,7 @@ function generateResponse(outputText) {
         "version": "1.0",
         "response": {
             "outputSpeech": {
-                "type": "PlainText",
+                "type": "SSML",
                 "text": outputText,
                 "ssml": "<speak>" + outputText + "</speak>"
             }
